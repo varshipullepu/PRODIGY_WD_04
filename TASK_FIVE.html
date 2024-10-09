@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #6a11cb, #2575fc); /* Blue Gradient Background */
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9); /* Light background for readability */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form Styling */
+        .weather-form {
+            margin-bottom: 20px;
+        }
+
+        /* Input Field */
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        /* Button Styling */
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #2575fc; /* Blue button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #6a11cb; /* Lighter blue on hover */
+        }
+
+        /* Weather Information Styling */
+        .weather-info {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        /* Gradient Circle Styling */
+        .circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #6a11cb, #2575fc); /* Gradient for the circle */
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <div class="weather-form">
+            <input type="text" id="locationInput" placeholder="Enter city name">
+            <button id="fetchWeatherBtn">Get Weather</button>
+        </div>
+        <div class="weather-info" id="weatherInfo">
+            <!-- Weather details will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        const apiKey = '6eb3bdedc45b0690a95f25c6521669f5'; // Replace with your OpenWeatherMap API key
+
+        document.getElementById('fetchWeatherBtn').addEventListener('click', () => {
+            const location = document.getElementById('locationInput').value;
+            if (location) {
+                fetchWeather(location);
+            } else {
+                alert("Please enter a city name");
+            }
+        });
+
+        function fetchWeather(location) {
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => displayWeather(data))
+                .catch(error => console.log("Error:", error));
+        }
+
+        function displayWeather(data) {
+            if (data.cod === "404") {
+                document.getElementById('weatherInfo').innerHTML = `<p>City not found</p>`;
+                return;
+            }
+
+            const { name, main, weather, wind } = data;
+            document.getElementById('weatherInfo').innerHTML = `
+                <div class="circle"></div>
+                <h2>${name}</h2>
+                <p>${weather[0].description}</p>
+                <p>Temperature: ${main.temp}°C</p>
+                <p>Humidity: ${main.humidity}%</p>
+                <p>Wind Speed: ${wind.speed} m/s</p>
+            `;
+        }
+    </script>
+</body>
+</html>
